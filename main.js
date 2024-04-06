@@ -1,10 +1,55 @@
-// Defining text characters for the empty and full hearts for you to use later.
+//Defining text characters for the empty and full hearts for you to use later.
 const EMPTY_HEART = '♡'
 const FULL_HEART = '♥'
 
 // Your JavaScript code goes here!
 
+document.addEventListener('DOMContentLoaded', () => {
+  const EMPTY_HEART = '♡';
+  const FULL_HEART = '♥';
+  const hearts = document.querySelectorAll('.like-glyph');
+  const errorModal = document.getElementById('modal');
+  const errorMessage = document.getElementById('modal-message');
 
+  // Add hidden class to error modal
+  errorModal.classList.add('hidden');
+
+  // Event listener for each heart
+  hearts.forEach(heart => {
+    heart.addEventListener('click', () => {
+      if (heart.classList.contains('activated-heart')) {
+        heart.textContent = EMPTY_HEART;
+        heart.classList.remove('activated-heart');
+      } else {
+        mimicServerCall()
+          .then(() => {
+            heart.textContent = FULL_HEART;
+            heart.classList.add('activated-heart');
+          })
+          .catch(error => {
+            errorMessage.textContent = error;
+            errorModal.classList.remove('hidden');
+            setTimeout(() => {
+              errorModal.classList.add('hidden');
+            }, 3000);
+          });
+      }
+    });
+  });
+});
+
+function mimicServerCall() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      let isRandomFailure = Math.random() < 0.2;
+      if (isRandomFailure) {
+        reject('Random server error. Try again.');
+      } else {
+        resolve('Pretend remote server notified of action!');
+      }
+    }, 300);
+  });
+}
 
 
 //------------------------------------------------------------------------------
